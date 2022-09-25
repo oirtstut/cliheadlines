@@ -3,10 +3,13 @@ name = "cliheadlines"
 version = "0.1.0"
 edition = "2021"
 
+description = "A Simple cli news reader application"
+license ="MIT"
+authors = ["oirtstut"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-colour = "0.6.0"
-serde = {version = "1.0.145", features = ["derive"]}
-serde_json = "1.0.85"
-ureq = "2.5.0"
+crossterm = "0.23.2"
+dotenv = "0.15.0"
+newsapi = {path = "./newsapi"} 
+termimad = "0.20.3"

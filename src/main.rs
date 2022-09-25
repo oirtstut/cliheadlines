@@ -1,36 +1,26 @@
-use std::{error::Error, fmt::Debug};
-use colour::{dark_green, yellow}; 
-use serde::Deserialize;
+mod theme;
 
-#[derive(Deserialize, Debug)]
-struct Articles{
-    articles: Vec<Article>
-}
+use std::error::Error;
+use newsapi::{NewsAPI, Endpoint, Country, Article};
 
-#[derive(Deserialize, Debug)]
-struct Article{
-    title: String,
-    url: String,
-}
-
-fn get_articles(url: &str) -> Result<Articles, Box<dyn Error>>{
-    let response = ureq::get(url).call()?.into_string()?;
-
-    let articles: Articles = serde_json::from_str(&response)?;
-    Ok(articles)
-}
-
-fn render_articles(articles: &Articles){
-    for a in &articles.articles {
-        dark_green!("\n> {}", a.title);
-        yellow!("\n> {}\n", a.url);
+fn render_articles(articles: &Vec<Article>){
+    let theme = theme::default();
+    theme.print_text("# Top headlines\n\n");
+    for a in articles {
+        theme.print_text(&format!("`{}`", a.title()));
+        theme.print_text(&format!("> *{}*", a.url()));
+        theme.print_text("---");
     }
 }
 fn main() -> Result<(), Box<dyn Error>> {
-    let url= "https://newsapi.org/v2/top-headlines?country=in&apiKey=0a48a52136824ffe880210b95879dea0";
-    let articles = get_articles(url)?;
+    //dotenv();
+    let api_key = std::env::var("API_KEY")?;
+    let mut newsapi = NewsAPI::new(&api_key);
+    newsapi.endpoint(Endpoint::TopHeadlines).country(Country::In);
 
-    render_articles(&articles);
+    let newsapi_response= newsapi.fetch();
+
+    render_articles(&newsapi_response?.articles());
 
     Ok(())
 }
