@@ -1,0 +1,9 @@
+/Users/ashutoshsrivastava/workspace/coding/rustlearn/cliheadlines/newsapi/target/debug/deps/futures_channel-3f1edc5d9e419936.rmeta: /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lib.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lock.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/mod.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/queue.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/oneshot.rs
+
+/Users/ashutoshsrivastava/workspace/coding/rustlearn/cliheadlines/newsapi/target/debug/deps/futures_channel-3f1edc5d9e419936.d: /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lib.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lock.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/mod.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/queue.rs /Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/oneshot.rs
+
+/Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lib.rs:
+/Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/lock.rs:
+/Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/mod.rs:
+/Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/mpsc/queue.rs:
+/Users/ashutoshsrivastava/.cargo/registry/src/github.com-1ecc6299db9ec823/futures-channel-0.3.24/src/oneshot.rs:

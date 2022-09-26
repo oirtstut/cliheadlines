@@ -1,11 +1,11 @@
+#[cfg(feature = "async")]
+use reqwest::Method;
 use serde::Deserialize;
-use thiserror::Error;
 use url::Url;
 
-const BASE_URL: &str = "https://newsapi.org/v2/";
+const BASE_URL: &str = "https://newsapi.org/v2";
 
-
-#[derive(Error, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum NewsApiError{
     #[error("Download request failed")]
     RequestFailed(#[from] ureq::Error),
@@ -16,13 +16,19 @@ pub enum NewsApiError{
     #[error("Url Parsing failed")]
     UrlParsing(#[from] url::ParseError),
     #[error("Request Failed: {0}")]
-    BadRequest(&'static str)
+    BadRequest(&'static str),
+    #[error("Async Request Failed")]
+    #[cfg(feature = "async")]
+    AsyncRequestFailed(#[from] reqwest::Error),
+    #[error("Async Response Failed")]
+    #[cfg(feature = "async")]
+    AsyncResponseFailed(reqwest::Error)
 }
 
 #[derive(Deserialize, Debug)]
 pub struct NewsAPIResponse{
     status: String,
-    pub articles: Vec<Article>,
+    articles: Vec<Article>,
     code: Option<String>
 }
 impl NewsAPIResponse {
@@ -35,7 +41,9 @@ impl NewsAPIResponse {
 pub struct Article{
     title: String,
     url: String,
+    description: Option<String>,
 }
+
 impl Article {
     pub fn title(&self) -> &str {
         &self.title
@@ -43,16 +51,10 @@ impl Article {
     pub fn url(&self) -> &str {
         &self.url
     }
+    pub fn desc(&self) -> Option<&String>{
+        self.description.as_ref()
+    }
 }
-
-// pub fn get_articles(url: &str) -> Result<Articles, NewsApiError>{
-//     let response = ureq::get(url).call().map_err(|e| NewsApiError::RequestFailed(e))
-//         ?.into_string().map_err(|e| NewsApiError::FailedResponseToString(e))?;
-
-//     let articles: Articles = serde_json::from_str(&response).map_err(|e| NewsApiError::ArticlesParsingFailed(e))?;
-//     Ok(articles)
-// }
-
 pub enum Endpoint {
     TopHeadlines
 }
@@ -106,7 +108,9 @@ impl NewsAPI {
 
     fn prepare_url(&self) -> Result<String, NewsApiError>{
         let mut url = Url::parse(BASE_URL)?;
-        url.path_segments_mut().unwrap().push(&self.endpoint.to_string());
+        url.path_segments_mut()
+            .unwrap()
+            .push(&self.endpoint.to_string());
 
         let country = format!("country={}", &self.country.to_string());
         url.set_query(Some(&country));
@@ -118,6 +122,35 @@ impl NewsAPI {
         let url = self.prepare_url()?;
         let req = ureq::get(&url).set("Authorization", &self.api_key);
         let response: NewsAPIResponse = req.call()?.into_json()?;
+
+        match response.status.as_str() {
+            "ok" => return Ok(response),
+            _ => return Err(map_response_err(response.code))
+        }
+    }
+
+    /// Fetch the news asynchronously.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if async download fails.
+    #[cfg(feature = "async")]
+    pub async fn fetch_async(&self) -> Result<NewsAPIResponse, NewsApiError>{
+        let url = self.prepare_url()?;
+        let client = reqwest::Client::new();
+        let request = client
+            .request(Method::GET, url)
+            .header("Authorization", &self.api_key)
+            .header("User-Agent", "NewsApiClient")
+            .build()
+            .map_err(|e| NewsApiError::AsyncRequestFailed(e))?;
+        
+        let response: NewsAPIResponse = client
+            .execute(request)
+            .await?
+            .json()
+            .await
+            .map_err(|e| NewsApiError::AsyncResponseFailed(e))?;
 
         match response.status.as_str() {
             "ok" => return Ok(response),

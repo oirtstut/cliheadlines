@@ -11,5 +11,6 @@ authors = ["oirtstut"]
 [dependencies]
 crossterm = "0.23.2"
 dotenv = "0.15.0"
-newsapi = {path = "./newsapi"} 
+newsapi = {path = "./newsapi", features = ["async"]} 
 termimad = "0.20.3"
+tokio = {version = "1.21.1", features = ["full"]}
